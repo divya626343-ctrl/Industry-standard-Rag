@@ -2,7 +2,10 @@
   "name": "rag-project",
   "image": "mcr.microsoft.com/devcontainers/python:3.10",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+     "ghcr.io/devcontainers/features/docker-in-docker:2": {
+        "moby": false,
+        "dockerDashComposeVersion": "v2"
+    }
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "forwardPorts": [6333, 6379, 8000],
