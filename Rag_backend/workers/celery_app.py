@@ -3,7 +3,7 @@ from Rag_backend.config.settings import settings
 
 app = Celery(
     "rag_backend",
-    broker=settings.CELERY_BROKER_URL,
+    broker=settings.REDIS_URL,
     backend=settings.CELERY_RESULT_BACKEND,
      include=[
         "Rag_backend.workers.ingestion",

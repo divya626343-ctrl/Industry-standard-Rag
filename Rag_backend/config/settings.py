@@ -93,8 +93,7 @@ class Settings(BaseSettings):
 
     # ── Async task queue ──────────────────────────────────────
     REDIS_URL: str = "redis://localhost:6379/0"
-    CELERY_BROKER_URL: str = REDIS_URL
-    CELERY_RESULT_BACKEND: str = REDIS_URL.rsplit("/", 1)[0] + "/1" 
+    
 
     # ── Evaluation & experiment tracking ──────────────────────
     MLFLOW_TRACKING_URI: str = "http://localhost:5000"
@@ -149,6 +148,14 @@ class Settings(BaseSettings):
     def redis_broker_url(self) -> str:
         return self.CELERY_BROKER_URL
 
+    @property
+    def CELERY_BROKER_URL(self) -> str:
+        return self.REDIS_URL
+
+    @property
+    def CELERY_RESULT_BACKEND(self) -> str:
+        return self.REDIS_URL.rsplit("/", 1)[0] + "/1"
+
     # ── Validators ────────────────────────────────────────────
     @field_validator("LLM_TEMPERATURE")
     @classmethod
@@ -180,6 +187,7 @@ class Settings(BaseSettings):
             return False, f"[warning] missing keys: {', '.join(missing)}"
         return True, "all required API keys found"
 
+    
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
