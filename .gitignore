@@ -1,0 +1,59 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments ---
+myvenv/
+venv/
+.venv/
+env/
+
+# --- Frontend (Rag_frontend) ---
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+
+# --- Database / local data files ---
+*.db
+*.sqlite3
+*.db-journal
+
+# --- Model / embedding caches (large, re-downloadable) ---
+.cache/
+.huggingface/
+*.pt
+*.bin
+
+# --- Logs & runtime artifacts ---
+*.log
+logs/
+traces/
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- IDE ---
+.vscode/
+.idea/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Jupyter (if any notebooks are used for experimentation) ---
+.ipynb_checkpoints/

@@ -1,0 +1,55 @@
+# --- Orchestration ---
+langchain
+langchain-community
+langchain-experimental
+langchain-huggingface
+langgraph
+langgraph-checkpoint-redis
+
+# --- Embeddings & NLP ---
+sentence-transformers
+transformers
+nltk
+tokenizers
+
+# --- Sparse retrieval ---
+rank-bm25
+
+# --- Vector store clients ---
+qdrant-client
+
+
+# --- LLM providers ---
+openai
+
+# --- API & backend ---
+fastapi
+uvicorn
+pydantic
+python-multipart
+python-dotenv
+
+# --- Async task queue ---
+celery
+redis
+
+
+# --- Frontend (if using Streamlit instead of Next.js) ---
+streamlit
+
+# --- Utilities ---
+numpy
+pandas
+tqdm
+pyyaml
+pymupdf
+
+pandoc
+
+boto3
+botocore
+fastembed
+pytest
+presidio-analyzer 
+presidio-anonymizer
+

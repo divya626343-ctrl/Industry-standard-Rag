@@ -1,0 +1,56 @@
+# --- Version control ---
+.git
+.gitignore
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.eggs/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# --- Virtual environments ---
+myvenv/
+.myvenv/
+env/
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- OS / editor cruft ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# --- Local data / volumes (should never be baked into an image) ---
+qdrant_storage/
+redis_data/
+*.sqlite3
+
+# --- Dataset / large local files (fed via seed script, not the image) ---
+RAG-Multi-Corpus/
+sample_dataset/
+*.pdf
+*.docx
+*.pptx
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Docs / non-runtime files ---
+*.md
+README*
+
+# --- Test artifacts ---
+tests/
+test_*.py
+*_test.py
