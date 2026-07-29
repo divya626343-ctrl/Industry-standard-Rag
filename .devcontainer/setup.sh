@@ -19,16 +19,16 @@ xelatex --version
 echo "=== Installing Python dependencies ==="
 pip install -r requirements.txt --break-system-packages
 
-echo "=== Downloading spaCy model ==="
-python -m spacy download en_core_web_lg
+echo "=== Downloading spaCy small model (NOT en_core_web_lg -- 400MB, too slow/fragile to download) ==="
+python -m spacy download en_core_web_sm
 
-echo "=== Starting Redis and Qdrant containers ==="
-docker run -d --name redis -p 6379:6379 redis:latest
-docker run -d --name qdrant -p 6333:6333 -p 6334:6334 qdrant/qdrant:latest
+echo "=== Starting Redis and Qdrant via docker compose (uses compose.yaml -- redis-stack, correct container names) ==="
+docker compose up -d redis qdrant
 
 echo "=== Waiting for services to be healthy ==="
 sleep 5
 curl -sf http://localhost:6333/collections && echo " -> Qdrant OK"
-redis-cli -h localhost ping && echo " -> Redis OK"
+docker exec rag_redis redis-cli ping && echo " -> Redis OK"
+docker exec rag_redis redis-cli MODULE LIST | grep -q search && echo " -> RediSearch module loaded OK"
 
 echo "=== Setup complete ==="
