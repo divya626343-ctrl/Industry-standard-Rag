@@ -93,8 +93,8 @@ class Settings(BaseSettings):
 
     # ── Async task queue ──────────────────────────────────────
     REDIS_URL: str = "redis://localhost:6379/0"
-    CELERY_BROKER_URL: str = "redis://localhost:6379/1"
-    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
+    CELERY_BROKER_URL: str = REDIS_URL
+    CELERY_RESULT_BACKEND: str = REDIS_URL.rsplit("/", 1)[0] + "/1" 
 
     # ── Evaluation & experiment tracking ──────────────────────
     MLFLOW_TRACKING_URI: str = "http://localhost:5000"
