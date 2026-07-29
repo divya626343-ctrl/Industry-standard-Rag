@@ -10,7 +10,7 @@ SPARSE_VECTOR_NAME = "sparse"
 
 class QdrantStore:
     def __init__(self):
-        self.client = QdrantClient(host = settings.QDRANT_HOST, port=settings.QDRANT_PORT)
+        self.client = QdrantClient(url = settings.QDRANT_ENDPOINT)
     
     def collection_exists(self, collection_name: str)->bool:
         return self.client.collection_exists(collection_name)
