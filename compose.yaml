@@ -38,7 +38,7 @@ services:
   celery_worker:
     build: .
     container_name: rag_celery_worker
-    command: celery -A workers.celery_app worker --loglevel=info
+    command: celery -A Rag_backend.workers.celery_app worker --loglevel=info
     depends_on:
       - redis
       - qdrant
