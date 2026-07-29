@@ -35,18 +35,18 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - QDRANT_ENDPOINT=http://qdrant:6333
 
-celery_worker:
-  build: .
-  container_name: rag_celery_worker
-  command: celery -A workers.celery_app worker --loglevel=info
-  depends_on:
-    - redis
-    - qdrant
-  env_file:
-    - .env
-  environment:
-    - REDIS_URL=redis://redis:6379/0
-    - QDRANT_ENDPOINT=http://qdrant:6333
+  celery_worker:
+    build: .
+    container_name: rag_celery_worker
+    command: celery -A workers.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+      - qdrant
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - QDRANT_ENDPOINT=http://qdrant:6333
 
  
   
