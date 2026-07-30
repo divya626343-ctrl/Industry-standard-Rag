@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["ingestion"])
 
 FORMAT_BY_EXTENSION = {
-    ".pdf": "pdf", ".docx": "docx", ".pptx": "pptx",
-     ".md": "md",
+    ".pdf": "pdf", ".docx": "docx", ".pptx": "pptx"
 }
 
 

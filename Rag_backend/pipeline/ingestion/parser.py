@@ -12,7 +12,7 @@ from Rag_backend.data_stores.object_store import object_store, build_key
 
 logger = logging.getLogger(__name__)
 
-CONVERTIBLE_FORMATS = {"docx", "pptx", "md"}
+CONVERTIBLE_FORMATS = {"docx", "pptx"}
 PDF_CONTENT_TYPE = "application/pdf"
 
 SOFFICE_CMD = os.environ.get("SOFFICE_PATH", "soffice")
@@ -44,8 +44,8 @@ def convert_to_pdf(file_bytes: bytes, file_format: str) -> bytes:
         input_path = tmp_dir_path / f"input.{file_format}"
         input_path.write_bytes(file_bytes)
 
-        if file_format in ("docx", "pptx"):
-            subprocess.run(
+    
+        subprocess.run(
                 [
                   
                     SOFFICE_CMD, "--headless", "--convert-to", "pdf",
@@ -53,17 +53,7 @@ def convert_to_pdf(file_bytes: bytes, file_format: str) -> bytes:
                 ],
                 check=True, capture_output=True,
             )
-        else:  #  md
-            subprocess.run(
-                [
-                    "pandoc", str(input_path),
-                    "-o", str(tmp_dir_path / "input.pdf"),
-                    "--pdf-engine=xelatex",
-                    "-V", f"mainfont={XELATEX_FONT}",
-                ],
-                check=True, capture_output=True,
-            )
-
+       
         output_path = tmp_dir_path / "input.pdf"
         if not output_path.exists():
             raise RuntimeError(f"[parser] conversion produced no output for format: {file_format}")

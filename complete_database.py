@@ -12,7 +12,7 @@ ORG = "ZX Bank"
 CHOSEN_STRATEGY = "recursive_token"  # change to whichever strategy you want the shared corpus built with
 
 
-FORMAT_FOLDERS = ["pdf", "docx", "pptx",  "md"]
+FORMAT_FOLDERS = ["pdf", "docx", "pptx"]
 
 
 READ_RETRY_ATTEMPTS = 5
