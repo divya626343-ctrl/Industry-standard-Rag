@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-impress \
     pandoc \
     texlive-xetex \
+    texlive-latex-recommended \
+    lmodern \
     texlive-fonts-recommended \
     fonts-dejavu-core \
     fonts-crosextra-carlito \
