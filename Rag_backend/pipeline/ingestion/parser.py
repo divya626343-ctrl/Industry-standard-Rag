@@ -12,7 +12,7 @@ from Rag_backend.data_stores.object_store import object_store, build_key
 
 logger = logging.getLogger(__name__)
 
-CONVERTIBLE_FORMATS = {"docx", "pptx", "html", "md"}
+CONVERTIBLE_FORMATS = {"docx", "pptx", "md"}
 PDF_CONTENT_TYPE = "application/pdf"
 
 SOFFICE_CMD = os.environ.get("SOFFICE_PATH", "soffice")
@@ -53,7 +53,7 @@ def convert_to_pdf(file_bytes: bytes, file_format: str) -> bytes:
                 ],
                 check=True, capture_output=True,
             )
-        else:  # html, md
+        else:  #  md
             subprocess.run(
                 [
                     "pandoc", str(input_path),

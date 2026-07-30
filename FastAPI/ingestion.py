@@ -14,7 +14,7 @@ router = APIRouter(tags=["ingestion"])
 
 FORMAT_BY_EXTENSION = {
     ".pdf": "pdf", ".docx": "docx", ".pptx": "pptx",
-    ".html": "html", ".htm": "html", ".md": "md",
+     ".md": "md",
 }
 
 

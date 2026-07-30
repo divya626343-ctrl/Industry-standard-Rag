@@ -11,11 +11,10 @@ DATASET_ROOT = Path("dataset/ZX Bank")
 ORG = "ZX Bank"
 CHOSEN_STRATEGY = "recursive_token"  # change to whichever strategy you want the shared corpus built with
 
-# Folder name IS the file_format — simpler and more reliable than extension sniffing.
-FORMAT_FOLDERS = ["pdf", "docx", "pptx", "html", "md"]
 
-# Retry settings for transient "file not found" reads (AV scans, indexing,
-# cloud-sync hydration, etc. can momentarily make a just-listed file unreadable).
+FORMAT_FOLDERS = ["pdf", "docx", "pptx",  "md"]
+
+
 READ_RETRY_ATTEMPTS = 5
 READ_RETRY_DELAY_SECONDS = 1.0
 
