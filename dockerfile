@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-writer \
     libreoffice-impress \
     pandoc \
+    texlive-xetex \
+    texlive-fonts-recommended \
+    fonts-dejavu-core \
     fonts-crosextra-carlito \
     fonts-crosextra-caladea \
     && rm -rf /var/lib/apt/lists/*
