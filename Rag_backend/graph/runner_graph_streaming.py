@@ -62,6 +62,9 @@ async def run_query_streaming(query: str, session_id: str):
                 if node_output.get("citations"):
                     citations = node_output["citations"]
 
+                if node_output.get("final_answer"):
+                    final_answer_parts = node_output["final_answer"]
+
     except Exception as e:
         logger.error(f"[runner_graph] streaming failed | session_id={session_id} | {e}")
         answer = "we ran into an issue processing your request. Please try again."
