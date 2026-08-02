@@ -2,7 +2,7 @@
 import logging
 from Rag_backend.data_stores.object_store import object_store
 from Rag_backend.data_stores.qdrant_store import vector_store
-from Rag_backend.data_stores.redis_store import collection_name
+from Rag_backend.data_stores.redis_store import collection_name, redis_store
 
 logger = logging.getLogger(__name__)
 
@@ -78,3 +78,19 @@ def get_citation_bundle(chuck_id, source_collection, session_id):
     location = get_citation_location(chunk_id=chuck_id, source_collection=source_collection, session_id=session_id)
     file_bytes , content_type = get_document_bytes(chunk_id= chuck_id, source_collection=source_collection, session_id=session_id)
     return {**location, "file_bytes": file_bytes, "content_type": content_type}
+
+
+
+def delete_document(doc_id: str, session_id: str) -> None:
+    target_collection = collection_name(session_id)
+
+    payload = vector_store.get_payload_by_doc_id(target_collection, doc_id)
+    if payload is None:
+        raise LookupError(f"doc_id {doc_id} not found in {target_collection}")
+
+    vector_store.delete_points_by_doc_id(target_collection, doc_id)
+    object_store.delete_file(payload["source_file_uri"])
+    redis_store.remove_doc_topic_summary(session_id, doc_id)
+    redis_store.remove_content_hash(session_id, payload["content_hash"])
+
+    logger.info(f"[viewer] deleted document | doc_id={doc_id} session_id={session_id}")

@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(session.router)
 app.include_router(ingestion.router)
 app.include_router(documents.router)
+app.include_router(documents.documents_router)
 app.include_router(chunking.router)
 app.include_router(query.router)
 app.include_router(trace.router)

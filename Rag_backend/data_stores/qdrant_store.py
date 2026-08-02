@@ -143,6 +143,23 @@ class QdrantStore:
         return [
             {"chunk_id": point.id, "score": point.score, "payload": point.payload} for point in result.points
         ] 
+
+
+    def delete_points_by_doc_id(self, collection_name: str, doc_id: str) -> None:
+   
+        if not self.collection_exists(collection_name):
+            logger.debug(f"[qdrant] delete_points_by_doc_id skipped, collection doesn't exist: {collection_name}")
+            return
+
+        self.client.delete(
+            collection_name=collection_name,
+            points_selector=models.FilterSelector(
+                filter=models.Filter(
+                    must=[models.FieldCondition(key="doc_id", match=models.MatchValue(value=doc_id))]
+                )
+            ),
+        )
+        logger.info(f"[qdrant] deleted all points for doc_id={doc_id} in {collection_name}")
     
 
     def search_dense_only(
@@ -168,6 +185,22 @@ class QdrantStore:
             {"chunk_id": point.id, "score": point.score, "payload": point.payload}
             for point in result.points
         ]
+
+
+    def get_payload_by_doc_id(self, collection_name: str, doc_id: str) -> dict | None:
+   
+        if not self.collection_exists(collection_name):
+            return None
+
+        points, _ = self.client.scroll(
+            collection_name=collection_name,
+            scroll_filter=models.Filter(
+                must=[models.FieldCondition(key="doc_id", match=models.MatchValue(value=doc_id))]
+            ),
+            limit=1,
+            with_payload=True,
+        )
+        return points[0].payload if points else None
 
     def get_chunk_payload(self, chunk_id: str, collection_name: str)-> dict | None:
         points = self.client.retrieve(collection_name=collection_name, ids=[chunk_id], with_payload= True)

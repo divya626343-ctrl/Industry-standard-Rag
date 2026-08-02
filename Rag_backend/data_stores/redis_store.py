@@ -172,10 +172,18 @@ class RedisStore:
        key = f"session:{session_id}:doc_summaries"
        return list(redis_client.hgetall(key).values())
 
+    def remove_doc_topic_summary(self, session_id: str, doc_id: str) -> None:
+        key = f"session:{session_id}:doc_summaries"
+        redis_client.hdel(key, doc_id)
+
     def add_content_hash(self, session_id: str, content_hash: str) -> None:
         key = f"session:{session_id}:content_hashes"
         redis_client.sadd(key, content_hash)
         redis_client.expire(key, ttl_seconds())
+
+    def remove_content_hash(self, session_id: str, content_hash: str) -> None:
+        key = f"session:{session_id}:content_hashes"
+        redis_client.srem(key, content_hash)
 
     def has_content_hash(self, session_id: str, content_hash: str) -> bool:
         key = f"session:{session_id}:content_hashes"
