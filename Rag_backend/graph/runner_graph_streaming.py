@@ -14,9 +14,9 @@ async def get_async_graph():
 logger = logging.getLogger(__name__)
 
 NODE_MESSAGES = {
-    "query_rewriter": "Understanding your question...",
-    "topic_boundary": "Checking if this is in scope...",
-    "retrieve": "Searching documents...",
+   "rewrite_query": "Understanding your question...",
+    "topic_boundary_check": "Checking if this is in scope...",
+    "retriever": "Searching documents...",
     "cross_encoder": "Ranking results...",
     "sufficiency_gate": "Evaluating context...",
     "hallucination_check": "Double-checking the answer...",
