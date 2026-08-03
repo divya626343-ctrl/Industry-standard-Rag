@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSession } from "./hooks/useSession";
+import { useSession, clearStoredSessionId } from "./hooks/useSession";
 import { useSessionExpiry } from "./hooks/useSessionExpiry";
 import { useDocuments } from "./hooks/useDocuments";
 import { useChat } from "./hooks/useChat";
@@ -15,16 +15,24 @@ import type { ChunkingStrategy, Citation } from "./types";
 const DEFAULT_STRATEGY: ChunkingStrategy = "semantic";
 
 export default function App() {
-  const { sessionId, ready, newChat } = useSession();
-  const { remainingMs, isWarning, resetTimer } = useSessionExpiry(sessionId);
+  const { sessionId, ready, error, retryInit, newChat } = useSession();
+
+  const handleExpired = () => {
+    // Genuine 404 from /session/{id}/status -- the session is actually gone
+    // server-side. Clear the stale id and reload; boot will init a fresh one.
+    clearStoredSessionId();
+    window.location.reload();
+  };
+
+  const { remainingSeconds, isWarning, refreshNow } = useSessionExpiry(sessionId, handleExpired);
 
   const [strategy, setStrategy] = useState<ChunkingStrategy | null>(null);
   const [popoverDismissed, setPopoverDismissed] = useState(false);
   const [docsPanelOpen, setDocsPanelOpen] = useState(false);
   const [activeCitation, setActiveCitation] = useState<Citation | null>(null);
 
-  const { documents, upload, remove, hasPendingUpload } = useDocuments(sessionId, strategy, resetTimer);
-  const { messages, send, retryLast, isStreaming } = useChat(sessionId, resetTimer);
+  const { documents, upload, remove, hasPendingUpload } = useDocuments(sessionId, strategy, refreshNow);
+  const { messages, send, retryLast, isStreaming } = useChat(sessionId, refreshNow);
 
   // Locks the instant either a first upload or first message has happened —
   // matches the confirmed non-blocking-popover, lock-on-first-action design.
@@ -50,7 +58,7 @@ export default function App() {
     setPopoverDismissed(false);
     setDocsPanelOpen(false);
     setActiveCitation(null);
-    resetTimer();
+    refreshNow();
     // messages/documents reset happens implicitly: both hooks are keyed off
     // sessionId internally via their API calls, but their local React state
     // needs a fresh mount to fully clear — simplest correct fix is reloading
@@ -61,8 +69,19 @@ export default function App() {
   const queryDisabled = !sessionId || isStreaming || hasPendingUpload;
   const queryDisabledReason = hasPendingUpload ? "Processing your document..." : undefined;
 
-  if (!ready || !sessionId) {
+  if (!ready) {
     return <div className="app-loading">Starting session...</div>;
+  }
+
+  if (error || !sessionId) {
+    return (
+      <div className="app-loading app-error">
+        <p>{error || "Something went wrong starting your session."}</p>
+        <button className="retry-btn" onClick={retryInit}>
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -74,7 +93,7 @@ export default function App() {
         onNewChat={handleNewChat}
       />
 
-      <SessionExpiryBanner remainingMs={remainingMs} isWarning={isWarning} />
+      <SessionExpiryBanner remainingSeconds={remainingSeconds} isWarning={isWarning} />
 
       <div className="app-body">
         <button

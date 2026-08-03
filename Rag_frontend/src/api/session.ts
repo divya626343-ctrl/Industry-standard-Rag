@@ -14,3 +14,8 @@ export function endSessionBeacon(sessionId: string): void {
 export async function endSession(sessionId: string): Promise<void> {
   await fetch(`${API_BASE}/session/${sessionId}/end`, { method: "POST" });
 }
+
+// Confirmed live in session.py — 404 means expired/not found, caller should treat as such.
+export async function getSessionStatus(sessionId: string): Promise<{ session_id: string; ttl_seconds: number }> {
+  return request(`/session/${sessionId}/status`);
+}

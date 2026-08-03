@@ -6,6 +6,14 @@
   color: var(--text-secondary);
 }
 
+.app-error {
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+  padding: 0 32px;
+  color: var(--error-text);
+}
+
 .app-shell {
   display: flex;
   flex-direction: column;

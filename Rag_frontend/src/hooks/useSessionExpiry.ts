@@ -1,37 +1,40 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { getSessionStatus } from "../api/session";
+import { ApiError } from "../api/client";
 
-const SESSION_TTL_MS = 30 * 60 * 1000; // matches the documented 30-min inactivity sweep
-const WARNING_THRESHOLD_MS = 4 * 60 * 1000; // "ticker shows ~4 min before it could die"
+const POLL_INTERVAL_MS = 30 * 1000;
+const WARNING_THRESHOLD_S = 4 * 60; // "ticker shows ~4 min before it could die", per your spec
 
-// FLAG: no GET /session/{id}/status (or similar TTL-check) endpoint has been
-// confirmed in any backend file shared so far. The original context doc says
-// the backend refreshes the session automatically whenever a query is
-// processed -- so this hook tracks expiry client-side and resets on any
-// confirmed action (send query / start upload) rather than polling a route
-// that may not exist. If a real status endpoint shows up, swap the interval
-// below for a poll against it -- everything downstream (the banner) stays the same.
-export function useSessionExpiry(sessionId: string | null) {
-  const deadlineRef = useRef(Date.now() + SESSION_TTL_MS);
-  const [remainingMs, setRemainingMs] = useState(SESSION_TTL_MS);
+export function useSessionExpiry(sessionId: string | null, onExpired: () => void) {
+  const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
 
-  const resetTimer = useCallback(() => {
-    deadlineRef.current = Date.now() + SESSION_TTL_MS;
-    setRemainingMs(SESSION_TTL_MS);
-  }, []);
+  const poll = useCallback(async () => {
+    if (!sessionId) return;
+    try {
+      const status = await getSessionStatus(sessionId);
+      setRemainingSeconds(status.ttl_seconds);
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 404) {
+        onExpired();
+      } else {
+        console.error("session status poll failed", e);
+      }
+    }
+  }, [sessionId, onExpired]);
 
   useEffect(() => {
     if (!sessionId) return;
-    resetTimer();
-    const interval = setInterval(() => {
-      setRemainingMs(Math.max(0, deadlineRef.current - Date.now()));
-    }, 1000);
+    poll();
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [sessionId, resetTimer]);
+  }, [sessionId, poll]);
 
   return {
-    remainingMs,
-    isWarning: remainingMs <= WARNING_THRESHOLD_MS,
-    expired: remainingMs <= 0,
-    resetTimer,
+    remainingSeconds,
+    isWarning: remainingSeconds !== null && remainingSeconds <= WARNING_THRESHOLD_S,
+    // Call after any confirmed activity (query sent, upload started) to reflect
+    // the backend's own heartbeat-on-query refresh immediately, rather than
+    // waiting up to 30s for the next scheduled poll to catch up.
+    refreshNow: poll,
   };
 }
