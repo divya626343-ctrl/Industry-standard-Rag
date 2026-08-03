@@ -1,7 +1,7 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+
 
 from Rag_backend.config.settings import settings
 from Rag_backend.data_stores.redis_store import redis_client

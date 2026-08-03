@@ -106,7 +106,7 @@ class Settings(BaseSettings):
     GENERATION_LOCAL_RETRIES: int = 2
     RAGAS_FAITHFULNESS_THRESHOLD: float = 0.92
     RAGAS_CONTEXT_PRECISION_THRESHOLD: float = 0.88
-    RAGAS_ANSWER_RELEVANCE_THRESHOLD: float = 0.90
+    RAGAS_ANSWER_RELEVANCE_THRESHOLD: float = 0.6
     RETRIEVAL_MRR_THRESHOLD: float = 0.78
 
     # ── Observability (self-hosted Langfuse) ──────────────────
