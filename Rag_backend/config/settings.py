@@ -99,7 +99,7 @@ class Settings(BaseSettings):
     MLFLOW_TRACKING_URI: str = "http://localhost:5000"
     GOLDEN_EVAL_SET_PATH: str = str(BASE_DIR / "evaluation" / "golden_eval_set.json")
 
-    CORS_ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "https://urban-journey-x5gxqr5xqp9j2p45v-3000.app.github.dev/"]
+    CORS_ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "https://urban-journey-x5gxqr5xqp9j2p45v-3000.app.github.dev"]
     MAX_UPLOAD_SIZE_MB: int = 30
 
 
