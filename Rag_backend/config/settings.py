@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = Field(default="", description="Groq API key")
 
     # Two models: cheap/fast for judging & guardrails, stronger for user-facing generation
-    GROQ_MODEL_JUDGE: str = "llama-3.1-8b-instant"
+    GROQ_MODEL_JUDGE: str = "gemma2-9b-it"
     GROQ_MODEL_GENERATION: str = "llama-3.3-70b-versatile"
     GROQ_BASE_URL: str = "https://api.groq.com/openai/v1"
 
