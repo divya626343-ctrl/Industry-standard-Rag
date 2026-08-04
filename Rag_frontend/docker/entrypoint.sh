@@ -9,7 +9,7 @@ set -e
 # Fix: index.html loads /env-config.js before the app bundle, and this
 # script regenerates that file from the *actual* runtime env var every time
 # the container starts, via envsubst on the template baked into the image.
-: "${VITE_API_URL:=https://urban-journey-x5gxqr5xqp9j2p45v-8000.app.github.dev}"
+: "${VITE_API_URL:=http://localhost:8000}"
 
 envsubst '${VITE_API_URL}' \
   < /usr/share/nginx/html/env-config.js.template \

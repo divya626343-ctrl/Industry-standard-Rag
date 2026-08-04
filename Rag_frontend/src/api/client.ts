@@ -10,6 +10,11 @@ export const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined) ||
   "http://localhost:8000";
 
+// Deliberately visible in the browser console on every load -- makes it
+// immediate to confirm whether the running bundle actually picked up the
+// value you think it did, without needing to dig through DevTools sources.
+console.info("[api] using backend base URL:", API_BASE);
+
 export class ApiError extends Error {
   status: number;
   body?: unknown;
