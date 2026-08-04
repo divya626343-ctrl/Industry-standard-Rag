@@ -63,8 +63,11 @@ export function MessageBubble({ message, sessionId, onCitationClick, onRetry }: 
     return (
       <div className="msg-row msg-row-assistant">
         <div className="bubble bubble-guardrail">
-          <AlertTriangleIcon size={15} style={{ marginRight: 6, flexShrink: 0, color: "var(--error-text)" }} />
-          <span>{message.content}</span>
+          <div className="bubble-guardrail-row">
+            <AlertTriangleIcon size={15} style={{ marginRight: 6, flexShrink: 0, color: "var(--error-text)" }} />
+            <span>{message.content}</span>
+          </div>
+          {message.isLatest && <TraceSection sessionId={sessionId} />}
         </div>
       </div>
     );
@@ -74,11 +77,17 @@ export function MessageBubble({ message, sessionId, onCitationClick, onRetry }: 
     return (
       <div className="msg-row msg-row-assistant">
         <div className="bubble bubble-error">
-          <AlertCircleIcon size={15} style={{ marginRight: 6, flexShrink: 0, color: "var(--error-text)" }} />
-          <span>{message.content || "Connection lost."}</span>
-          <button className="retry-btn" onClick={onRetry}>
-            Retry
-          </button>
+          <div className="bubble-error-row">
+            <AlertCircleIcon size={15} style={{ marginRight: 6, flexShrink: 0, color: "var(--error-text)" }} />
+            <span>{message.content || "Connection lost."}</span>
+            <button className="retry-btn" onClick={onRetry}>
+              Retry
+            </button>
+          </div>
+          {/* Backend writes append_trace() on the crash path too (see runner_graph_streaming.py's
+              except block) -- the trace up to the point of failure is genuinely useful here for
+              figuring out which node broke, so it's worth surfacing even on a hard error. */}
+          {message.isLatest && <TraceSection sessionId={sessionId} />}
         </div>
       </div>
     );

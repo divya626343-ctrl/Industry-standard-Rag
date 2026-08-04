@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSession, clearStoredSessionId } from "./hooks/useSession";
 import { useSessionExpiry } from "./hooks/useSessionExpiry";
 import { useDocuments } from "./hooks/useDocuments";
@@ -17,12 +17,12 @@ const DEFAULT_STRATEGY: ChunkingStrategy = "semantic";
 export default function App() {
   const { sessionId, ready, error, retryInit, newChat } = useSession();
 
-  const handleExpired = () => {
+  const handleExpired = useCallback(() => {
     // Genuine 404 from /session/{id}/status -- the session is actually gone
     // server-side. Clear the stale id and reload; boot will init a fresh one.
     clearStoredSessionId();
     window.location.reload();
-  };
+  }, []);
 
   const { remainingSeconds, isWarning, refreshNow } = useSessionExpiry(sessionId, handleExpired);
 

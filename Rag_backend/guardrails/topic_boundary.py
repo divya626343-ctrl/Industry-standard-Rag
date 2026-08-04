@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel
-from Rag_backend.llm_client import call_llm_structured, TaskType
+from Rag_backend.llm_client import call_llm_structured, TaskType, cap_tokens
 from Rag_backend.config.prompts import TOPIC_BOUNDARY_SYSTEM_PROMPT
 from Rag_backend.config.settings import settings
 from Rag_backend.data_stores.redis_store import redis_store
@@ -31,8 +31,11 @@ def build_scope_context(session_id: str | None) -> str:
 def check_topic_boundary(rewritten_query: str, session_id: str | None) -> TopicBoundaryResult:
     scope_context = build_scope_context(session_id)
 
+    prompt=f"Scope:\n{scope_context}\n\nQuery to classify:\n{rewritten_query}"
+    prompt = cap_tokens(prompt)
+
     return call_llm_structured(
-        prompt=f"Scope:\n{scope_context}\n\nQuery to classify:\n{rewritten_query}",
+        prompt = prompt,
         schema=TopicBoundaryResult,
         system=TOPIC_BOUNDARY_SYSTEM_PROMPT,
         task=TaskType.JUDGE,

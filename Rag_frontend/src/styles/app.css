@@ -304,20 +304,26 @@
 }
 
 .bubble-guardrail {
-  display: flex;
-  align-items: flex-start;
   background: var(--trace-fill);
   border: 1px solid var(--strategy-hover);
 }
 
+.bubble-guardrail-row {
+  display: flex;
+  align-items: flex-start;
+}
+
 .bubble-error {
+  background: var(--error-msg-fill);
+  border: 1px solid var(--error-text);
+  color: var(--error-text);
+}
+
+.bubble-error-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  background: var(--error-msg-fill);
-  border: 1px solid var(--error-text);
-  color: var(--error-text);
 }
 
 .retry-btn {

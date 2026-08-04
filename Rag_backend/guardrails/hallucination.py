@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel
-from Rag_backend.llm_client import call_llm_structured, TaskType
+from Rag_backend.llm_client import call_llm_structured, TaskType, cap_tokens
 from Rag_backend.config.prompts import HALLUCINATION_SYSTEM_PROMPT
 
 class HallucinationCheckResult(BaseModel):
@@ -13,13 +13,16 @@ def check_hallucination(query: str, answer: str, context_chunks: list[dict]) -> 
     numbered_context = "\n\n".join(
         f"[{i+1}] {c['payload']['chunk_text']}" for i, c in enumerate(context_chunks)
     )
+
+    prompt = (
+        f"Query:\n{query}\n\n"
+        f"Context chunks:\n{numbered_context}\n\n"
+        f"Generated answer to verify:\n{answer}"
+    )
+    prompt = cap_tokens(prompt) 
  
     return call_llm_structured(
-        prompt=(
-            f"Query:\n{query}\n\n"
-            f"Context chunks:\n{numbered_context}\n\n"
-            f"Generated answer to verify:\n{answer}"
-        ),
+        prompt=prompt,
         schema=HallucinationCheckResult,
         system=HALLUCINATION_SYSTEM_PROMPT,
         task=TaskType.JUDGE,

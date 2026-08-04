@@ -3,6 +3,7 @@ import time
 import random
 import logging
 import threading
+import tiktoken
 from collections import deque
 from enum import Enum
 from pydantic import BaseModel, ValidationError
@@ -13,6 +14,21 @@ from openai import OpenAI, APITimeoutError, RateLimitError
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound = BaseModel)
+
+
+encoding = tiktoken.get_encoding("cl100k_base")
+MAX_PROMPT_TOKENS = 5000
+
+def cap_tokens(text: str, max_tokens: int = MAX_PROMPT_TOKENS) -> str:
+    
+    tokens = encoding.encode(text)
+    if len(tokens) <= max_tokens:
+        return text
+ 
+    truncated = encoding.decode(tokens[:max_tokens])
+    logger.warning(f"[LLM] prompt truncated | {len(tokens)} -> {max_tokens} tokens")
+    return truncated + "\n\n[...truncated to fit token limit...]"
+
 
 #Task -> model mapping
 
